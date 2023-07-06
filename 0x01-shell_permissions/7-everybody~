@@ -1,2 +1,0 @@
-#!/bin/bash
-su chmod 111 hello
