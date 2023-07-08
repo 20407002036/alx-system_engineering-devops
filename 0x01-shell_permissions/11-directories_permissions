@@ -1,3 +1,2 @@
 #!/bin/bash
-chmod 711 ./*select 
-d
+chmod -R 755 */
