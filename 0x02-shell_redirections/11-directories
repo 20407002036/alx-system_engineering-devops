@@ -1,2 +1,2 @@
 #!/bin/bash
-find . -type d -mindepth 2 | wc -l
+find . -mindepth 1 -type d | grep -cvE '^(\.|\.\.)$'
