@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $USER /etc/passwd
+echo $USER /etc/passwd | $HOME /ect/passwd
