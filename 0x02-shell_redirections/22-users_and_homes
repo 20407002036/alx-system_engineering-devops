@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $USER /etc/passwd | $HOME /ect/passwd
+cut -d ':' -f 1 , 6 /etc/passwd | sort
