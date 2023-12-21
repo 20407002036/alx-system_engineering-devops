@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This prints the string using while loop
+
+# initialize the counter variab;e
+counter=1
+while [ $counter -le 10 ]
+do
+    echo "Best School"
+    ((counter++))
+done
