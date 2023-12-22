@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# This pints list of runnning processes
+
+ps aux
