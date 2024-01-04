@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# pings an IP adress of the arguement
+
+read name
+ping $name
