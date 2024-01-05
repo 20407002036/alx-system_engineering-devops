@@ -1,0 +1,11 @@
+#!/bin/env bash
+# Define the mapping for localhost and facebook.com
+
+# Backup the original hosts file
+cp /etc/hosts ~/hosts.backup
+
+# Configure localhost and facebook.com in the hosts file
+echo "127.0.0.2        localhost" > /hosts.backup
+echo "8.8.8.8          facebook.com" >> ~/host.backup
+
+cp -f ~/hosts.backup /etc/hosts
