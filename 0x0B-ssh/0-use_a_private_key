@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# connects to the file
 
 # Set the SSH private key file
 PRIVATE_KEY=/home/kyobenimaru/.ssh/id_rsa.pub
