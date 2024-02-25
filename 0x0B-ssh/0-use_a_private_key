@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Set the SSH private key file
-PRIVATE_KEY=~/.ssh/id_rsa.pub
+PRIVATE_KEY=/home/kyobenimaru/.ssh/id_rsa.pub
 
 # Set the username
 USERNAME=ubuntu
