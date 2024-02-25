@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Set the SSH private key file
+PRIVATE_KEY=~/.ssh/id_rsa.pub
+
+# Set the username
+USERNAME=ubuntu
+
+# Set the hostname or IP address of the server
+HOST=8.8.8.8
+
+# Connect to the server using SSH
+ssh -i "$PRIVATE_KEY" "$USERNAME"@"$HOST"
