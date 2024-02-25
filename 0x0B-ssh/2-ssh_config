@@ -1,0 +1,4 @@
+# SSH client configuration
+Host 34.229.55.216
+    IdentityFile ~/.ssh/id_rsa
+    PasswordAuthentication no

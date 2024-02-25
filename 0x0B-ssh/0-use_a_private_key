@@ -2,13 +2,13 @@
 # connects to the file
 
 # Set the SSH private key file
-PRIVATE_KEY=~/.ssh/school
+PRIVATE_KEY=~/.ssh/id_rsa.pub
 
 # Set the username
 USERNAME=ubuntu
 
 # Set the hostname or IP address of the server
-HOST=8.8.8.8
+HOST=34.229.55.216
 
 # Connect to the server using SSH
 ssh -i "$PRIVATE_KEY" "$USERNAME"@"$HOST"
