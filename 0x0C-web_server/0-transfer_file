@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Checking for command line args
+
+if [ $3 -lt 4 ]
+then
+	echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+	exit 1
+
+# Assign params to variables
+
+path_to_file = $1
+ip = $2
+username = $3
+private_key_path = $4
+
+# Disablin the stricy host key checking
+scp -o "StrictHostKeyChecking = no" -i "$private_key_path" "$path_to_file" "$username@ip:~/"
+
+
+# Check if the file transfer was succeful
+
+if [ $? -eq 0 ]
+then
+	echo "File transfere successfull"
+else
+	echo "File transfer failed"
+fi
