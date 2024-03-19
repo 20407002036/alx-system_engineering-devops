@@ -6,3 +6,4 @@ exec { 'kill_killmenow_process':
   refreshonly => true,                  # Only execute when triggered explicitly
   logoutput   => true,                  # Log the output of the command
 }
+
