@@ -1,0 +1,19 @@
+# Step 1: Access the Docker container
+docker exec -it <container_id> /bin/bash
+
+# Step 2: Check Apache service status
+service apache2 status
+
+# Step 3: Check Apache configuration files
+cat /etc/apache2/sites-enabled/000-default.conf
+
+# Step 4: Ensure correct index file is configured
+# Edit the configuration file if necessary
+nano /etc/apache2/sites-enabled/000-default.conf
+
+# Ensure that the DocumentRoot points to the correct directory containing index.html file.
+# It should look something like this:
+# DocumentRoot /var/www/html
+
+# Step 5: Restart Apache service
+service apache2 restart
