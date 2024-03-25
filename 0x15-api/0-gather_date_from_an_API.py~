@@ -1,0 +1,14 @@
+#!/usr/bin/python3
+"""
+Use the Rest API, for a given ID, reruns infro raleat
+to the id's todos
+
+script accepts int
+
+"""
+
+import requests as req
+
+resp = req('https://jsonplaceholder.typicode.com/todos')
+
+print(resp)
