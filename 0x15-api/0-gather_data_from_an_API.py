@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-By Solomon 
+By Solomon
 Python script that, using a REST API, for a given employee ID,
 returns information about his/her TODO list progress.
 """
@@ -36,4 +36,3 @@ if __name__ == "__main__":
 
     for i in tasks:
         print("\t {}".format(i))
-        
