@@ -1,0 +1,906 @@
+[4mPS[24m(1)                                                                                   User Commands                                                                                  [4mPS[24m(1)
+
+[1mNAME[0m
+       ps - report a snapshot of the current processes.
+
+[1mSYNOPSIS[0m
+       [1mps [22m[[4moptions[24m]
+
+[1mDESCRIPTION[0m
+       [1mps [22mdisplays information about a selection of the active processes.  If you want a repetitive update of the selection and the displayed information, use [1mtop [22minstead.
+
+       This version of [1mps [22maccepts several kinds of options:
+
+       1   UNIX options, which may be grouped and must be preceded by a dash.
+       2   BSD options, which may be grouped and must not be used with a dash.
+       3   GNU long options, which are preceded by two dashes.
+
+       Options  of  different  types  may  be freely mixed, but conflicts can appear.  There are some synonymous options, which are functionally identical, due to the many standards and [1mps[0m
+       implementations that this [1mps [22mis compatible with.
+
+       Note that [1mps -aux [22mis distinct from [1mps aux[22m.  The POSIX and UNIX standards require that [1mps -aux [22mprint all processes owned by a user named [4mx[24m, as well as  printing  all  processes  that
+       would  be  selected by the [1m-a [22moption.  If the user named [4mx[24m does not exist, this [1mps [22mmay interpret the command as [1mps aux [22minstead and print a warning.  This behavior is intended to aid
+       in transitioning old scripts and habits.  It is fragile, subject to change, and thus should not be relied upon.
+
+       By default, [1mps [22mselects all processes with the same effective user ID (euid=EUID) as the current user and associated with the same terminal as the invoker.  It displays  the  process
+       ID  (pid=PID),  the  terminal  associated  with  the  process (tname=TTY), the cumulated CPU time in [DD-]hh:mm:ss format (time=TIME), and the executable name (ucmd=CMD).  Output is
+       unsorted by default.
+
+       The use of BSD-style options will add process state (stat=STAT) to the default display and show the command args (args=COMMAND) instead of the executable  name.   You  can  override
+       this  with  the  [1mPS_FORMAT [22menvironment variable. The use of BSD-style options will also change the process selection to include processes on other terminals (TTYs) that are owned by
+       you; alternately, this may be described as setting the selection to be the set of all processes filtered to exclude processes owned by other users  or  not  on  a  terminal.   These
+       effects are not considered when options are described as being "identical" below, so [1m-M [22mwill be considered identical to [1mZ [22mand so on.
+
+       Except  as  described  below,  process  selection  options are additive.  The default selection is discarded, and then the selected processes are added to the set of processes to be
+       displayed.  A process will thus be shown if it meets any of the given selection criteria.
+
+[1mEXAMPLES[0m
+       To see every process on the system using standard syntax:
+          [1mps -e[0m
+          [1mps -ef[0m
+          [1mps -eF[0m
+          [1mps -ely[0m
+
+       To see every process on the system using BSD syntax:
+          [1mps ax[0m
+          [1mps axu[0m
+
+       To print a process tree:
+          [1mps ‐ejH[0m
+          [1mps axjf[0m
+
+       To get info about threads:
+          [1mps ‐eLf[0m
+          [1mps axms[0m
+
+       To get security info:
+          [1mps ‐eo euser,ruser,suser,fuser,f,comm,label[0m
+          [1mps axZ[0m
+          [1mps ‐eM[0m
+
+       To see every process running as root (real & effective ID) in user format:
+          [1mps -U root -u root u[0m
+
+       To see every process with a user-defined format:
+          [1mps -eo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wchan:14,comm[0m
+          [1mps axo stat,euid,ruid,tty,tpgid,sess,pgrp,ppid,pid,pcpu,comm[0m
+          [1mps -Ao pid,tt,user,fname,tmout,f,wchan[0m
+
+       Print only the process IDs of syslogd:
+          [1mps -C syslogd -o pid=[0m
+
+       Print only the name of PID 42:
+          [1mps -q 42 -o comm=[0m
+
+[1mSIMPLE PROCESS SELECTION[0m
+       [1ma      [22mLift the BSD-style "only yourself" restriction, which is imposed upon the set of all processes when some BSD-style (without "-") options are used or when the  [1mps  [22mpersonality
+              setting  is  BSD-like.   The  set  of processes selected in this manner is in addition to the set of processes selected by other means.  An alternate description is that this
+              option causes [1mps [22mto list all processes with a terminal (tty), or to list all processes when used together with the [1mx [22moption.
+
+       [1m-A     [22mSelect all processes.  Identical to [1m-e[22m.
+
+       [1m-a     [22mSelect all processes except both session leaders (see [4mgetsid[24m(2)) and processes not associated with a terminal.
+
+       [1m-d     [22mSelect all processes except session leaders.
+
+       [1m--deselect[0m
+              Select all processes except those that fulfill the specified conditions (negates the selection).  Identical to [1m-N[22m.
+
+       [1m-e     [22mSelect all processes.  Identical to [1m-A[22m.
+
+       [1mg      [22mReally all, even session leaders.  This flag is obsolete and may be discontinued in a future release.  It is normally implied by the [1ma [22mflag, and is only useful when operating
+              in the sunos4 personality.
+
+       [1m-N     [22mSelect all processes except those that fulfill the specified conditions (negates the selection).  Identical to [1m--deselect[22m.
+
+       [1mT      [22mSelect all processes associated with this terminal.  Identical to the [1mt [22moption without any argument.
+
+       [1mr      [22mRestrict the selection to only running processes.
+
+       [1mx      [22mLift the BSD-style "must have a tty" restriction, which is imposed upon the set of all processes when some BSD-style (without "-") options are used or when the [1mps [22mpersonality
+              setting is BSD-like.  The set of processes selected in this manner is in addition to the set of processes selected by other means.  An  alternate  description  is  that  this
+              option causes [1mps [22mto list all processes owned by you (same EUID as [1mps[22m), or to list all processes when used together with the [1ma [22moption.
+
+[1mPROCESS SELECTION BY LIST[0m
+       These options accept a single argument in the form of a blank-separated or comma-separated list.  They can be used multiple times.  For example: [1mps -p "1 2" -p 3,4[0m
+
+       -[4m123[24m   Identical to [1m--pid [4m[22m123[24m.
+
+       [4m123[24m    Identical to [1m--pid [4m[22m123[24m.
+
+       [1m-C [4m[22mcmdlist[0m
+              Select  by command name.  This selects the processes whose executable name is given in [4mcmdlist[24m.  NOTE: The command name is not the same as the command line. Previous versions
+              of procps and the kernel truncated this command name to 15 characters. This limitation is no longer present in both. If you depended on matching only 15 characters,  you  may
+              no longer get a match.
+
+       [1m-G [4m[22mgrplist[0m
+              Select  by  real  group ID (RGID) or name.  This selects the processes whose real group name or ID is in the [4mgrplist[24m list.  The real group ID identifies the group of the user
+              who created the process, see [4mgetgid[24m(2).
+
+       [1m-g [4m[22mgrplist[0m
+              Select by session OR by effective group name.  Selection by session is specified by many standards, but selection by effective group is  the  logical  behavior  that  several
+              other operating systems use.  This [1mps [22mwill select by session when the list is completely numeric (as sessions are).  Group ID numbers will work only when some group names are
+              also specified.  See the [1m-s [22mand [1m--group [22moptions.
+
+       [1m--Group [4m[22mgrplist[0m
+              Select by real group ID (RGID) or name.  Identical to [1m-G[22m.
+
+       [1m--group [4m[22mgrplist[0m
+              Select  by  effective  group  ID (EGID) or name.  This selects the processes whose effective group name or ID is in [4mgrplist[24m.  The effective group ID describes the group whose
+              file access permissions are used by the process (see [4mgetegid[24m(2)).  The [1m-g [22moption is often an alternative to [1m--group[22m.
+
+       [1mp [4m[22mpidlist[0m
+              Select by process ID.  Identical to [1m-p [22mand [1m--pid[22m.
+
+       [1m-p [4m[22mpidlist[0m
+              Select by PID.  This selects the processes whose process ID numbers appear in [4mpidlist[24m.  Identical to [1mp [22mand [1m--pid[22m.
+
+       [1m--pid [4m[22mpidlist[0m
+              Select by process ID.  Identical to [1m-p [22mand [1mp[22m.
+
+       [1m--ppid [4m[22mpidlist[0m
+              Select by parent process ID.  This selects the processes with a parent process ID in [4mpidlist[24m.  That is, it selects processes that are children of those listed in [4mpidlist[24m.
+
+       [1mq [4m[22mpidlist[0m
+              Select by process ID (quick mode).  Identical to [1m-q [22mand [1m--quick-pid[22m.
+
+       [1m-q [4m[22mpidlist[0m
+              Select by PID (quick mode).  This selects the processes whose process ID numbers appear in [4mpidlist[24m.  With this option [1mps [22mreads the necessary info only for the pids listed  in
+              the  [4mpidlist[24m  and doesn’t apply additional filtering rules. The order of pids is unsorted and preserved. No additional selection options, sorting and forest type listings are
+              allowed in this mode.  Identical to [1mq [22mand [1m--quick-pid[22m.
+
+       [1m--quick-pid [4m[22mpidlist[0m
+              Select by process ID (quick mode).  Identical to [1m-q [22mand [1mq[22m.
+
+       [1m-s [4m[22msesslist[0m
+              Select by session ID.  This selects the processes with a session ID specified in [4msesslist[24m.
+
+       [1m--sid [4m[22msesslist[0m
+              Select by session ID.  Identical to [1m-s[22m.
+
+       [1mt [4m[22mttylist[0m
+              Select by tty.  Nearly identical to [1m-t [22mand [1m--tty[22m, but can also be used with an empty [4mttylist[24m to indicate the terminal associated with [1mps[22m.  Using the [1mT  [22moption  is  considered
+              cleaner than using [1mt [22mwith an empty [4mttylist[24m.
+
+       [1m-t [4m[22mttylist[0m
+              Select  by  tty.   This selects the processes associated with the terminals given in [4mttylist[24m.  Terminals (ttys, or screens for text output) can be specified in several forms:
+              /dev/ttyS1, ttyS1, S1.  A plain "-" may be used to select processes not attached to any terminal.
+
+       [1m--tty [4m[22mttylist[0m
+              Select by terminal.  Identical to [1m-t [22mand [1mt[22m.
+
+       [1mU [4m[22muserlist[0m
+              Select by effective user ID (EUID) or name.  This selects the processes whose effective user name or ID is in [4muserlist[24m.  The effective user ID describes the user  whose  file
+              access permissions are used by the process (see [4mgeteuid[24m(2)).  Identical to [1m-u [22mand [1m--user[22m.
+
+       [1m-U [4m[22muserlist[0m
+              Select  by  real  user  ID (RUID) or name.  It selects the processes whose real user name or ID is in the [4muserlist[24m list.  The real user ID identifies the user who created the
+              process, see [4mgetuid[24m(2).
+
+       [1m-u [4m[22muserlist[0m
+              Select by effective user ID (EUID) or name.  This selects the processes whose effective user name or ID is in [4muserlist[24m.
+
+              The effective user ID describes the user whose file access permissions are used by the process (see [4mgeteuid[24m(2)).  Identical to [1mU [22mand [1m--user[22m.
+
+       [1m--User [4m[22muserlist[0m
+              Select by real user ID (RUID) or name.  Identical to [1m-U[22m.
+
+       [1m--user [4m[22muserlist[0m
+              Select by effective user ID (EUID) or name.  Identical to [1m-u [22mand [1mU[22m.
+
+[1mOUTPUT FORMAT CONTROL[0m
+       These options are used to choose the information displayed by [1mps[22m.  The output may differ by personality.
+
+       [1m-c     [22mShow different scheduler information for the [1m-l [22moption.
+
+       [1m--context[0m
+              Display security context format (for SELinux).
+
+       [1m-f     [22mDo full-format listing. This option can be combined with many other UNIX-style options to add additional columns.  It also causes the command arguments to be  printed.   When
+              used with [1m-L[22m, the NLWP (number of threads) and LWP (thread ID) columns will be added.  See the [1mc [22moption, the format keyword [1margs[22m, and the format keyword [1mcomm[22m.
+
+       [1m-F     [22mExtra full format.  See the [1m-f [22moption, which [1m-F [22mimplies.
+
+       [1m--format [4m[22mformat[0m
+              user-defined format.  Identical to [1m-o [22mand [1mo[22m.
+
+       [1mj      [22mBSD job control format.
+
+       [1m-j     [22mJobs format.
+
+       [1ml      [22mDisplay BSD long format.
+
+       [1m-l     [22mLong format.  The [1m-y [22moption is often useful with this.
+
+       [1m-M     [22mAdd a column of security data.  Identical to [1mZ [22m(for SELinux).
+
+       [1mO [4m[22mformat[0m
+              is  preloaded  [1mo  [22m(overloaded).   The  BSD  [1mO  [22moption  can  act  like [1m-O [22m(user-defined output format with some common fields predefined) or can be used to specify sort order.
+              Heuristics are used to determine the behavior of this option.  To ensure that the desired behavior is obtained (sorting or formatting), specify the option in some  other  way
+              (e.g.  with [1m-O [22mor [1m--sort[22m).  When used as a formatting option, it is identical to [1m-O[22m, with the BSD personality.
+
+       [1m-O [4m[22mformat[0m
+              Like [1m-o[22m, but preloaded with some default columns.  Identical to [1m-o pid,[4m[22mformat[24m[1m,state,tname,time,command [22mor [1m-o pid,[4m[22mformat[24m[1m,tname,time,cmd[22m, see [1m-o [22mbelow.
+
+       [1mo [4m[22mformat[0m
+              Specify user-defined format.  Identical to [1m-o [22mand [1m--format[22m.
+
+       [1m-o [4m[22mformat[0m
+              User-defined  format.   [4mformat[24m  is  a  single argument in the form of a blank-separated or comma-separated list, which offers a way to specify individual output columns.  The
+              recognized keywords are described in the [1mSTANDARD FORMAT SPECIFIERS [22msection below.  Headers may be renamed ([1mps -o pid,ruser=RealUser -o  comm=Command[22m)  as  desired.   If  all
+              column  headers  are empty ([1mps -o pid= -o comm=[22m) then the header line will not be output.  Column width will increase as needed for wide headers; this may be used to widen up
+              columns such as WCHAN ([1mps -o pid,wchan=WIDE-WCHAN-COLUMN -o comm[22m).  Explicit width control ([1mps opid,wchan:42,cmd[22m) is offered too.  The behavior of [1mps ‐o  pid=X,comm=Y  [22mvaries
+              with  personality; output may be one column named "X,comm=Y" or two columns named "X" and "Y".  Use multiple [1m-o [22moptions when in doubt.  Use the [1mPS_FORMAT [22menvironment variable
+              to specify a default as desired; DefSysV and DefBSD are macros that may be used to choose the default UNIX or BSD columns.
+
+       [1m-P     [22mAdd a column showing [1mpsr[22m.
+
+       [1ms      [22mDisplay signal format.
+
+       [1mu      [22mDisplay user-oriented format.
+
+       [1mv      [22mDisplay virtual memory format.
+
+       [1mX      [22mRegister format.
+
+       [1m-y     [22mDo not show flags; show rss in place of addr.  This option can only be used with [1m-l[22m.
+
+       [1mZ      [22mAdd a column of security data.  Identical to [1m-M [22m(for SELinux).
+
+[1mOUTPUT MODIFIERS[0m
+       [1mc      [22mShow the true command name.  This is derived from the name of the executable file, rather than from the argv value.  Command arguments and any modifications to them are  thus
+              not  shown.   This option effectively turns the [1margs [22mformat keyword into the [1mcomm [22mformat keyword; it is useful with the [1m-f [22mformat option and with the various BSD-style format
+              options, which all normally display the command arguments.  See the [1m-f [22moption, the format keyword [1margs[22m, and the format keyword [1mcomm[22m.
+
+       [1m--cols [4m[22mn[0m
+              Set screen width.
+
+       [1m--columns [4m[22mn[0m
+              Set screen width.
+
+       [1m--cumulative[0m
+              Include some dead child process data (as a sum with the parent).
+
+       [1m-D [4m[22mformat[0m
+              Set the date format of the [1mlstart [22mfield to [4mformat[24m. This format is parsed by [1mstrftime[22m(3) and should be a maximum of 24 characters to not mis‐align columns.
+
+       [1m--date‐format [4m[22mformat[0m
+              Identical to [1m-D[22m.
+
+       [1me      [22mShow the environment after the command.
+
+       [1mf      [22mASCII art process hierarchy (forest).
+
+       [1m--forest[0m
+              ASCII art process tree.
+
+       [1mh      [22mNo header.  (or, one header per screen in the BSD personality).  The [1mh [22moption is problematic.  Standard BSD [1mps [22muses this option to print a header on each page of output,  but
+              older  Linux  [1mps  [22muses  this  option to totally disable the header.  This version of [1mps [22mfollows the Linux usage of not printing the header unless the BSD personality has been
+              selected, in which case it prints a header on each page of output.  Regardless of the current personality, you can use the long options [1m--headers [22mand [1m--no-headers  [22mto  enable
+              printing headers each page or disable headers entirely, respectively.
+
+       [1m-H     [22mShow process hierarchy (forest).
+
+       [1m--headers[0m
+              Repeat header lines, one per page of output.
+
+       [1mk [4m[22mspec[24m Specify  sorting  order.   Sorting  syntax  is  [[1m+[22m|[1m-[22m][4mkey[24m[,[[1m+[22m|[1m-[22m][4mkey[24m[,...]].   Choose a multi-letter key from the [1mSTANDARD FORMAT SPECIFIERS [22msection.  The "+" is optional since
+              default direction is increasing numerical or lexicographic order.  Identical to [1m--sort[22m.
+
+                      Examples:
+                      [1mps jaxkuid,-ppid,+pid[0m
+                      [1mps axk comm o comm,args[0m
+                      [1mps kstart_time -ef[0m
+
+       [1m--lines [4m[22mn[0m
+              Set screen height.
+
+       [1mn      [22mNumeric output for WCHAN and USER (including all types of UID and GID).
+
+       [1m--no-headers[0m
+              Print no header line at all.  [1m--no-heading [22mis an alias for this option.
+
+       [1mO [4m[22morder[0m
+              Sorting order (overloaded).  The BSD [1mO [22moption can act like [1m-O [22m(user-defined output format with some  common  fields  predefined)  or  can  be  used  to  specify  sort  order.
+              Heuristics  are  used to determine the behavior of this option.  To ensure that the desired behavior is obtained (sorting or formatting), specify the option in some other way
+              (e.g.  with [1m-O [22mor [1m--sort[22m).
+
+              For sorting, obsolete BSD [1mO [22moption syntax is [1mO[22m[[1m+[22m|[1m-[22m][4mk1[24m[,[[1m+[22m|[1m-[22m][4mk2[24m[,...]].  It orders the processes listing according  to  the  multilevel  sort  specified  by  the  sequence  of
+              one-letter  short  keys [4mk1[24m,[4mk2[24m, ...  described in the [1mOBSOLETE SORT KEYS [22msection below.  The "+" is currently optional, merely re-iterating the default direction on a key, but
+              may help to distinguish an [1mO [22msort from an [1mO [22mformat.  The "-" reverses direction only on the key it precedes.
+
+       [1m--rows [4m[22mn[0m
+              Set screen height.
+
+       [1mS      [22mSum up some information, such as CPU usage, from dead child processes into their parent.  This is useful for examining a system where a parent process  repeatedly  forks  off
+              short-lived children to do work.
+
+       [1m--sort [4m[22mspec[0m
+              Specify  sorting  order.   Sorting  syntax  is  [[1m+[22m|[1m-[22m][4mkey[24m[,[[1m+[22m|[1m-[22m][4mkey[24m[,...]].   Choose a multi-letter key from the [1mSTANDARD FORMAT SPECIFIERS [22msection.  The "+" is optional since
+              default direction is increasing numerical or lexicographic order.  Identical to [1mk[22m.  For example: [1mps jax --sort=uid,-ppid,+pid[0m
+
+       [1mw      [22mWide output.  Use this option twice for unlimited width.
+
+       [1m-w     [22mWide output.  Use this option twice for unlimited width.
+
+       [1m--width [4m[22mn[0m
+              Set screen width.
+
+[1mTHREAD DISPLAY[0m
+       [1mH      [22mShow threads as if they were processes.
+
+       [1m-L     [22mShow threads, possibly with LWP and NLWP columns.
+
+       [1mm      [22mShow threads after processes.
+
+       [1m-m     [22mShow threads after processes.
+
+       [1m-T     [22mShow threads, possibly with SPID column.
+
+[1mOTHER INFORMATION[0m
+       [1m--help [4m[22msection[0m
+              Print a help message.  The [4msection[24m argument can be one of [4ms[24mimple, [4ml[24mist, [4mo[24mutput, [4mt[24mhreads, [4mm[24misc, or [4ma[24mll.  The argument can be shortened to one of the underlined letters as  in:
+              s|l|o|t|m|a.
+
+       [1m--info [22mPrint debugging info.
+
+       [1mL      [22mList all format specifiers.
+
+       [1mV      [22mPrint the procps‐ng version.
+
+       [1m-V     [22mPrint the procps‐ng version.
+
+       [1m--version[0m
+              Print the procps‐ng version.
+
+[1mNOTES[0m
+       This [1mps [22mworks by reading the virtual files in /proc.  This [1mps [22mdoes not need to be setuid kmem or have any privileges to run.  Do not give this [1mps [22many special permissions.
+
+       CPU  usage  is currently expressed as the percentage of time spent running during the entire lifetime of a process.  This is not ideal, and it does not conform to the standards that
+       [1mps [22motherwise conforms to.  CPU usage is unlikely to add up to exactly 100%.
+
+       The SIZE and RSS fields don’t count some parts of a process including the page tables, kernel stack, struct thread_info, and struct task_struct.  This is usually at least 20 KiB  of
+       memory that is always resident.  SIZE is the virtual size of the process (code+data+stack).
+
+       Processes  marked  <defunct> are dead processes (so-called "zombies") that remain because their parent has not destroyed them properly.  These processes will be destroyed by [4minit[24m(8)
+       if the parent process exits.
+
+       If the length of the username is greater than the width of the display column, the username will be truncated.  See the [1m-o [22mand [1m-O [22mformatting options to customize length.
+
+       Commands options such as [1mps -aux [22mare not recommended as it is a confusion of two different standards.  According to the POSIX and UNIX standards, the above command asks  to  display
+       all  processes with a TTY (generally the commands users are running) plus all processes owned by a user named [4mx[24m.  If that user doesn’t exist, then [1mps [22mwill assume you really meant [1mps[0m
+       [1maux[22m.
+
+[1mPROCESS FLAGS[0m
+       The sum of these values is displayed in the "F" column, which is provided by the [1mflags [22moutput specifier:
+
+               1    forked but didn’t exec
+               4    used super-user privileges
+
+[1mPROCESS STATE CODES[0m
+       Here are the different values that the [1ms[22m, [1mstat [22mand [1mstate [22moutput specifiers (header "STAT" or "S") will display to describe the state of a process:
+
+               D    uninterruptible sleep (usually IO)
+               I    Idle kernel thread
+               R    running or runnable (on run queue)
+               S    interruptible sleep (waiting for an event to complete)
+               T    stopped by job control signal
+               t    stopped by debugger during the tracing
+               W    paging (not valid since the 2.6.xx kernel)
+               X    dead (should never be seen)
+               Z    defunct ("zombie") process, terminated but not reaped by its parent
+
+       For BSD formats and when the [1mstat [22mkeyword is used, additional characters may be displayed:
+
+               <    high-priority (not nice to other users)
+               N    low-priority (nice to other users)
+               L    has pages locked into memory (for real-time and custom IO)
+               s    is a session leader
+               l    is multi‐threaded (using CLONE_THREAD, like NPTL pthreads do)
+               +    is in the foreground process group
+
+[1mOBSOLETE SORT KEYS[0m
+       These keys are used by the BSD [1mO [22moption (when it is used for sorting).  The GNU [1m--sort [22moption doesn’t use these keys, but the specifiers  described  below  in  the  [1mSTANDARD  FORMAT[0m
+       [1mSPECIFIERS  [22msection.  Note that the values used in sorting are the internal values [1mps [22muses and not the "cooked" values used in some of the output format fields (e.g.  sorting on tty
+       will sort into device number, not according to the terminal name displayed).  Pipe [1mps [22moutput into the [1msort[22m(1) command if you want to sort the cooked values.
+       [1mKEY   LONG         DESCRIPTION[0m
+       c     cmd          simple name of executable
+       C     pcpu         cpu utilization
+       f     flags        flags as in long format F field
+       g     pgrp         process group ID
+       G     tpgid        controlling tty process group ID
+       j     cutime       cumulative user time
+       J     cstime       cumulative system time
+       k     utime        user time
+       m     min_flt      number of minor page faults
+       M     maj_flt      number of major page faults
+       n     cmin_flt     cumulative minor page faults
+       N     cmaj_flt     cumulative major page faults
+       o     session      session ID
+       p     pid          process ID
+       P     ppid         parent process ID
+       r     rss          resident set size
+       R     resident     resident pages
+       s     size         memory size in kilobytes
+       S     share        amount of shared pages
+       t     tty          the device number of the controlling tty
+       T     start_time   time process was started
+       U     uid          user ID number
+       u     user         user name
+       v     vsize        total VM size in KiB
+       y     priority     kernel scheduling priority
+
+[1mAIX FORMAT DESCRIPTORS[0m
+       This [1mps [22msupports AIX format descriptors, which work somewhat like the formatting codes of [4mprintf[24m(1) and [4mprintf[24m(3).  For example, the normal default output can be produced with this:
+       [1mps -eo "%p %y %x %c"[22m.  The [1mNORMAL [22mcodes are described in the next section.
+       [1mCODE   NORMAL   HEADER[0m
+       %C     pcpu     %CPU
+       %G     group    GROUP
+       %P     ppid     PPID
+       %U     user     USER
+       %a     args     COMMAND
+       %c     comm     COMMAND
+       %g     rgroup   RGROUP
+       %n     nice     NI
+       %p     pid      PID
+       %r     pgid     PGID
+       %t     etime    ELAPSED
+       %u     ruser    RUSER
+       %x     time     TIME
+       %y     tty      TTY
+       %z     vsz      VSZ
+
+[1mSTANDARD FORMAT SPECIFIERS[0m
+       Here are the different keywords that may be used to control the output format (e.g. with option [1m-o[22m) or to sort the selected processes with the GNU-style [1m--sort [22moption.
+
+       For example: [1mps -eo pid,user,args --sort user[0m
+
+       This version of [1mps [22mtries to recognize most of the keywords used in other implementations of [1mps[22m.
+
+       The following user-defined format specifiers may contain spaces: [1margs[22m, [1mcmd[22m, [1mcomm[22m, [1mcommand[22m, [1mfname[22m, [1mucmd[22m, [1mucomm[22m, [1mlstart[22m, [1mbsdstart[22m, [1mstart[22m.
+
+       Some keywords may not be available for sorting.
+
+       [1mCODE        HEADER    DESCRIPTION[0m
+
+       [1m%cpu        [22m%CPU      cpu utilization of the process in "##.#" format.  Currently, it is the CPU time used divided by the time the process has been running (cputime/realtime ratio),
+                             expressed as a percentage.  It will not add up to 100% unless you are lucky.  (alias [1mpcpu[22m).
+
+       [1m%mem        [22m%MEM      ratio of the process’s resident set size  to the physical memory on the machine, expressed as a percentage.  (alias [1mpmem[22m).
+
+       [1mag_id       [22mAGID      The autogroup identifier associated with a process which operates in conjunction with the CFS scheduler to improve interactive desktop performance.
+
+       [1mag_nice     [22mAGNI      The autogroup nice value which affects scheduling of all processes in that group.
+
+       [1margs        [22mCOMMAND   command with all its arguments as a string. Modifications to the arguments may be shown.  The output in this column  may  contain  spaces.   A  process  marked
+                             <defunct>  is  partly  dead,  waiting  to be fully destroyed by its parent.  Sometimes the process args will be unavailable; when this happens, [1mps [22mwill instead
+                             print the executable name in brackets.  (alias [1mcmd[22m, [1mcommand[22m).  See also the [1mcomm [22mformat keyword, the [1m-f [22moption, and the [1mc [22moption.
+                             When specified last, this column will extend to the edge of the display.  If [1mps [22mcan not determine display width, as when output is redirected  (piped)  into  a
+                             file or another command, the output width is undefined (it may be 80, unlimited, determined by the [1mTERM [22mvariable, and so on).  The [1mCOLUMNS [22menvironment variable
+                             or [1m--cols [22moption may be used to exactly determine the width in this case.  The [1mw [22mor [1m-w [22moption may be also be used to adjust width.
+
+       [1mblocked     [22mBLOCKED   mask  of  the  blocked  signals,  see  [4msignal[24m(7).   According  to  the  width  of  the  field,  a 32 or 64-bit mask in hexadecimal format is displayed.  (alias
+                             [1msig_block[22m, [1msigmask[22m).
+
+       [1mbsdstart    [22mSTART     time the command started.  If the process was started less than 24 hours ago, the output format is " HH:MM", else it is "  Mmm:SS"  (where  Mmm  is  the  three
+                             letters of the month).  See also [1mlstart[22m, [1mstart[22m, [1mstart_time[22m, and [1mstime[22m.
+
+       [1mbsdtime     [22mTIME      accumulated  cpu time, user + system.  The display format is usually "MMM:SS", but can be shifted to the right if the process used more than 999 minutes of cpu
+                             time.
+
+       [1mc           [22mC         processor utilization. Currently, this is the integer value of the percent usage over the lifetime of the process.  (see [1m%cpu[22m).
+
+       [1mcaught      [22mCAUGHT    mask of the caught signals, see [4msignal[24m(7).  According to the width of  the  field,  a  32  or  64  bits  mask  in  hexadecimal  format  is  displayed.   (alias
+                             [1msig_catch[22m, [1msigcatch[22m).
+
+       [1mcgname      [22mCGNAME    display name of control groups to which the process belongs.
+
+       [1mcgroup      [22mCGROUP    display control groups to which the process belongs.
+
+       [1mcgroupns    [22mCGROUPNS  Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1mclass       [22mCLS       scheduling class of the process.  (alias [1mpolicy[22m, [1mcls[22m).  Field’s possible values are:
+
+                                      -    not reported
+                                      TS   SCHED_OTHER
+                                      FF   SCHED_FIFO
+                                      RR   SCHED_RR
+                                      B    SCHED_BATCH
+                                      ISO  SCHED_ISO
+                                      IDL  SCHED_IDLE
+                                      DLN  SCHED_DEADLINE
+                                      ?    unknown value
+
+       [1mcls         [22mCLS       scheduling class of the process.  (alias [1mpolicy[22m, [1mcls[22m).  Field’s possible values are:
+
+                                      -    not reported
+                                      TS   SCHED_OTHER
+                                      FF   SCHED_FIFO
+                                      RR   SCHED_RR
+                                      B    SCHED_BATCH
+                                      ISO  SCHED_ISO
+                                      IDL  SCHED_IDLE
+                                      DLN  SCHED_DEADLINE
+                                      ?    unknown value
+
+       [1mcmd         [22mCMD       see [1margs[22m.  (alias [1margs[22m, [1mcommand[22m).
+
+       [1mcomm        [22mCOMMAND   command name (only the executable name).  The output in this column may contain spaces.  (alias [1mucmd[22m, [1mucomm[22m).  See also the [1margs [22mformat keyword, the [1m-f [22moption,
+                             and the [1mc [22moption.
+                             When  specified  last,  this column will extend to the edge of the display.  If [1mps [22mcan not determine display width, as when output is redirected (piped) into a
+                             file or another command, the output width is undefined (it may be 80, unlimited, determined by the [1mTERM [22mvariable, and so on).  The [1mCOLUMNS [22menvironment variable
+                             or [1m--cols [22moption may be used to exactly determine the width in this case.  The [1mw [22mor [1m-w [22moption may be also be used to adjust width.
+
+       [1mcommand     [22mCOMMAND   See [1margs[22m.  (alias [1margs[22m, [1mcommand[22m).
+
+       [1mcp          [22mCP        per-mill (tenths of a percent) CPU usage.  (see [1m%cpu[22m).
+
+       [1mcputime     [22mTIME      cumulative CPU time, "[DD-]hh:mm:ss" format.  (alias [1mtime[22m).
+
+       [1mcputimes    [22mTIME      cumulative CPU time in seconds (alias [1mtimes[22m).
+
+       [1mcuc         [22m%CUC      The CPU utilization of a process, including dead children, in an extended "##.###" format.  (see also [1m%cpu[22m, [1mc[22m, [1mcp[22m, [1mcuu[22m, [1mpcpu[22m).
+
+       [1mcuu         [22m%CUU      The CPU utilization of a process in an extended "##.###" format.  (see also [1m%cpu[22m, [1mc[22m, [1mcp[22m, [1mcuc[22m, [1mpcpu[22m).
+
+       [1mdrs         [22mDRS       data resident set size, the amount of private memory [4mreserved[24m by a process.  It is also known as DATA. Such memory may not yet be mapped to [1mrss [22mbut will always
+                             be included included in the [1mvsz [22mamount.
+
+       [1megid        [22mEGID      effective group ID number of the process as a decimal integer.  (alias [1mgid[22m).
+
+       [1megroup      [22mEGROUP    effective group ID of the process.  This will be the textual group ID, if it can be  obtained  and  the  field  width  permits,  or  a  decimal  representation
+                             otherwise.  (alias [1mgroup[22m).
+
+       [1meip         [22mEIP       instruction pointer. As of kernel 4.9.xx will be zeroed out unless task is exiting or being core dumped.
+
+       [1mesp         [22mESP       stack pointer. As of kernel 4.9.xx will be zeroed out unless task is exiting or being core dumped.
+
+       [1metime       [22mELAPSED   elapsed time since the process was started, in the form [[DD-]hh:]mm:ss.
+
+       [1metimes      [22mELAPSED   elapsed time since the process was started, in seconds.
+
+       [1meuid        [22mEUID      effective user ID (alias [1muid[22m).
+
+       [1meuser       [22mEUSER     effective user name.  This will be the textual user ID, if it can be obtained and the field width permits, or a decimal representation otherwise.  The [1mn [22moption
+                             can be used to force the decimal representation.  (alias [1muname[22m, user[1m).[0m
+
+       [1mexe         [22mEXE       path to the executable. Useful if path cannot be printed via [1mcmd[22m, [1mcomm [22mor [1margs [22mformat options.
+
+       [1mf           [22mF         flags associated with the process, see the [1mPROCESS FLAGS [22msection.  (alias [1mflag[22m, [1mflags[22m).
+
+       [1mfgid        [22mFGID      filesystem access group ID.  (alias [1mfsgid[22m).
+
+       [1mfgroup      [22mFGROUP    filesystem  access  group  ID.   This  will  be the textual group ID, if it can be obtained and the field width permits, or a decimal representation otherwise.
+                             (alias [1mfsgroup[22m).
+
+       [1mflag        [22mF         see [1mf[22m.  (alias [1mf[22m, [1mflags[22m).
+
+       [1mflags       [22mF         see [1mf[22m.  (alias [1mf[22m, [1mflag[22m).
+
+       [1mfname       [22mCOMMAND   first 8 bytes of the base name of the process’s executable file.  The output in this column may contain spaces.
+
+       [1mfuid        [22mFUID      filesystem access user ID.  (alias [1mfsuid[22m).
+
+       [1mfuser       [22mFUSER     filesystem access user ID.  This will be the textual user ID, if it can be obtained and the field width permits, or a decimal representation otherwise.
+
+       [1mgid         [22mGID       see [1megid[22m.  (alias [1megid[22m).
+
+       [1mgroup       [22mGROUP     see [1megroup[22m.  (alias [1megroup[22m).
+
+       [1mignored     [22mIGNORED   mask of the ignored signals, see [4msignal[24m(7).  According to the width of the  field,  a  32  or  64  bits  mask  in  hexadecimal  format  is  displayed.   (alias
+                             [1msig_ignore[22m, [1msigignore[22m).
+
+       [1mipcns       [22mIPCNS     Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1mlabel       [22mLABEL     security label, most commonly used for SELinux context data.  This is for the [4mMandatory[24m [4mAccess[24m [4mControl[24m ("MAC") found on high-security systems.
+
+       [1mlstart      [22mSTARTED   time the command started. This will be in the form "DDD mmm HH:MM:SS YYY" unless changed by the [1m-D [22moption.
+
+       [1mlsession    [22mSESSION   displays the login session identifier of a process, if systemd support has been included.
+
+       [1mluid        [22mLUID      displays Login ID associated with a process.
+
+       [1mlwp         [22mLWP       light weight process (thread) ID of the dispatchable entity (alias [1mspid[22m, [1mtid[22m).  See [1mtid [22mfor additional information.
+
+       [1mlxc         [22mLXC       The name of the lxc container within which a task is running.  If a process is not running inside a container, a dash (’-’) will be shown.
+
+       [1mmachine     [22mMACHINE   displays the machine name for processes assigned to VM or container, if systemd support has been included.
+
+       [1mmaj_flt     [22mMAJFLT    The number of major page faults that have occurred with this process.
+
+       [1mmin_flt     [22mMINFLT    The number of minor page faults that have occurred with this process.
+
+       [1mmntns       [22mMNTNS     Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1mnetns       [22mNETNS     Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1mni          [22mNI        nice value. This ranges from 19 (nicest) to -20 (not nice to others), see [4mnice[24m(1).  (alias [1mnice[22m).
+
+       [1mnice        [22mNI        see [1mni[22m.[1m(alias ni[22m).
+
+       [1mnlwp        [22mNLWP      number of lwps (threads) in the process.  (alias [1mthcount[22m).
+
+       [1mnuma        [22mNUMA      The node associated with the most recently used processor.  A [4m-1[24m means that NUMA information is unavailable.
+
+       [1mnwchan      [22mWCHAN     address of the kernel function where the process is sleeping (use [1mwchan [22mif you want the kernel function name).
+
+       [1moom         [22mOOM       Out of Memory Score. The value, ranging from 0 to +1000, used to select task(s) to kill when memory is exhausted.
+
+       [1moomadj      [22mOOMADJ    Out  of  Memory  Adjustment  Factor.  The  value  is added to the current out of memory score which is then used to determine which task to kill when memory is
+                             exhausted.
+
+       [1mouid        [22mOWNER     displays the Unix user identifier of the owner of the session of a process, if systemd support has been included.
+
+       [1mpcpu        [22m%CPU      see [1m%cpu[22m.  (alias [1m%cpu[22m).
+
+       [1mpending     [22mPENDING   mask of the pending signals. See [4msignal[24m(7).  Signals pending on the process are distinct from signals pending on individual threads.  Use the [1mm [22moption  or  the
+                             [1m-m [22moption to see both.  According to the width of the field, a 32 or 64 bits mask in hexadecimal format is displayed.  (alias [1msig[22m).
+
+       [1mpgid        [22mPGID      process group ID or, equivalently, the process ID of the process group leader.  (alias [1mpgrp[22m).
+
+       [1mpgrp        [22mPGRP      see [1mpgid[22m.  (alias [1mpgid[22m).
+
+       [1mpid         [22mPID       a number representing the process ID (alias [1mtgid[22m).
+
+       [1mpidns       [22mPIDNS     Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1mpmem        [22m%MEM      see [1m%mem[22m.  (alias [1m%mem[22m).
+
+       [1mpolicy      [22mPOL       scheduling class of the process.  (alias [1mclass[22m, [1mcls[22m).  Possible values are:
+
+                                      -    not reported
+                                      TS   SCHED_OTHER
+                                      FF   SCHED_FIFO
+                                      RR   SCHED_RR
+                                      B    SCHED_BATCH
+                                      ISO  SCHED_ISO
+                                      IDL  SCHED_IDLE
+                                      DLN  SCHED_DEADLINE
+                                      ?    unknown value
+
+       [1mppid        [22mPPID      parent process ID.
+
+       [1mpri         [22mPRI       priority of the process.  Higher number means higher priority.
+
+       [1mpsr         [22mPSR       processor that process last executed on.
+
+       [1mpss         [22mPSS       Proportional share size, the non‐swapped physical memory, with shared memory proportionally accounted to all tasks mapping it.
+
+       [1mrbytes      [22mRBYTES    Number of bytes which this process really did cause to be fetched from the storage layer.
+
+       [1mrchars      [22mRCHARS    Number of bytes which this task has caused to be read from storage.
+
+       [1mrgid        [22mRGID      real group ID.
+
+       [1mrgroup      [22mRGROUP    real group name.  This will be the textual group ID, if it can be obtained and the field width permits, or a decimal representation otherwise.
+
+       [1mrops        [22mROPS      Number of read I/O operations—that is, system calls such as [1mread[22m(2) and [1mpread[22m(2).
+
+       [1mrss         [22mRSS       resident set size, the non-swapped physical memory that a task has used (in kiloBytes).  (alias [1mrssize[22m, [1mrsz[22m).
+
+       [1mrssize      [22mRSS       see [1mrss[22m.  (alias [1mrss[22m, [1mrsz[22m).
+
+       [1mrsz         [22mRSZ       see [1mrss[22m.  (alias [1mrss[22m, [1mrssize[22m).
+
+       [1mrtprio      [22mRTPRIO    realtime priority.
+
+       [1mruid        [22mRUID      real user ID.
+
+       [1mruser       [22mRUSER     real user ID.  This will be the textual user ID, if it can be obtained and the field width permits, or a decimal representation otherwise.
+
+       [1ms           [22mS         minimal  state display (one character).  See section [1mPROCESS STATE CODES [22mfor the different values.  See also [1mstat [22mif you want additional information displayed.
+                             (alias [1mstate[22m).
+
+       [1msched       [22mSCH       scheduling policy of the process.  The policies SCHED_OTHER (SCHED_NORMAL), SCHED_FIFO, SCHED_RR, SCHED_BATCH, SCHED_ISO,  SCHED_IDLE  and  SCHED_DEADLINE  are
+                             respectively displayed as 0, 1, 2, 3, 4, 5 and 6.
+
+       [1mseat        [22mSEAT      displays the identifier associated with all hardware devices assigned to a specific workplace, if systemd support has been included.
+
+       [1msess        [22mSESS      session ID or, equivalently, the process ID of the session leader.  (alias [1msession[22m, [1msid[22m).
+
+       [1msgi_p       [22mP         processor that the process is currently executing on.  Displays "*" if the process is not currently running or runnable.
+
+       [1msgid        [22mSGID      saved group ID.  (alias [1msvgid[22m).
+
+       [1msgroup      [22mSGROUP    saved group name.  This will be the textual group ID, if it can be obtained and the field width permits, or a decimal representation otherwise.
+
+       [1msid         [22mSID       see [1msess[22m.  (alias [1msess[22m, [1msession[22m).
+
+       [1msig         [22mPENDING   see [1mpending[22m.  (alias [1mpending[22m, [1msig_pend[22m).
+
+       [1msigcatch    [22mCAUGHT    see [1mcaught[22m.  (alias [1mcaught[22m, [1msig_catch[22m).
+
+       [1msigignore   [22mIGNORED   see [1mignored[22m.  (alias [1mignored[22m, [1msig_ignore[22m).
+
+       [1msigmask     [22mBLOCKED   see [1mblocked[22m.  (alias [1mblocked[22m, [1msig_block[22m).
+
+       [1msize        [22mSIZE      approximate amount of swap space that would be required if the process were to dirty all writable pages and then be swapped out.  This number is very rough!
+
+       [1mslice       [22mSLICE     displays the slice unit which a process belongs to, if systemd support has been included.
+
+       [1mspid        [22mSPID      see [1mlwp[22m.  (alias [1mlwp[22m, [1mtid[22m).
+
+       [1mstackp      [22mSTACKP    address of the bottom (start) of stack for the process.
+
+       [1mstart       [22mSTARTED   time  the  command  started.   If  the  process  was  started  less  than  24 hours ago, the output format is "HH:MM:SS", else it is "  Mmm dd" (where Mmm is a
+                             three-letter month name).  See also [1mlstart[22m, [1mbsdstart[22m, [1mstart_time[22m, and [1mstime[22m.
+
+       [1mstart_time  [22mSTART     starting time or date of the process.  Only the year will be displayed if the process was not started the same year [1mps [22mwas invoked, or "MmmDD" if  it  was  not
+                             started the same day, or "HH:MM" otherwise.  See also [1mbsdstart[22m, [1mstart[22m, [1mlstart[22m, and [1mstime[22m.
+
+       [1mstat        [22mSTAT      multi-character  process  state.   See section [1mPROCESS STATE CODES [22mfor the different values meaning.  See also [1ms [22mand [1mstate [22mif you just want the first character
+                             displayed.
+
+       [1mstate       [22mS         see [1ms[22m. (alias [1ms[22m).
+
+       [1mstime       [22mSTIME     see [1mstart_time[22m. (alias [1mstart_time[22m).
+
+       [1msuid        [22mSUID      saved user ID.  (alias [1msvuid[22m).
+
+       [1msupgid      [22mSUPGID    group ids of supplementary groups, if any.  See [1mgetgroups[22m(2).
+
+       [1msupgrp      [22mSUPGRP    group names of supplementary groups, if any.  See [1mgetgroups[22m(2).
+
+       [1msuser       [22mSUSER     saved user name.  This will be the textual user ID, if it can be obtained and the field width permits, or a decimal representation otherwise.  (alias [1msvuser[22m).
+
+       [1msvgid       [22mSVGID     see [1msgid[22m.  (alias [1msgid[22m).
+
+       [1msvuid       [22mSVUID     see [1msuid[22m.  (alias [1msuid[22m).
+
+       [1msz          [22mSZ        size in physical pages of the core image of the process.  This includes text, data, and stack space.  Device mappings are currently excluded; this  is  subject
+                             to change.  See [1mvsz [22mand [1mrss[22m.
+
+       [1mtgid        [22mTGID      a number representing the thread group to which a task belongs (alias [1mpid[22m).  It is the process ID of the thread group leader.
+
+       [1mthcount     [22mTHCNT     see [1mnlwp[22m.  (alias [1mnlwp[22m).  number of kernel threads owned by the process.
+
+       [1mtid         [22mTID       the  unique  number  representing  a  dispatchable  entity  (alias [1mlwp[22m, [1mspid[22m).  This value may also appear as: a process ID (pid); a process group ID (pgrp); a
+                             session ID for the session leader (sid); a thread group ID for the thread group leader (tgid); and a tty process group ID for the process group leader (tpgid).
+
+       [1mtime        [22mTIME      cumulative CPU time, "[DD-]HH:MM:SS" format.  (alias [1mcputime[22m).
+
+       [1mtimens      [22mTIMENS    Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1mtimes       [22mTIME      cumulative CPU time in seconds (alias [1mcputimes[22m).
+
+       [1mtname       [22mTTY       controlling tty (terminal).  (alias [1mtt[22m, [1mtty[22m).
+
+       [1mtpgid       [22mTPGID     ID of the foreground process group on the tty (terminal) that the process is connected to, or -1 if the process is not connected to a tty.
+
+       [1mtrs         [22mTRS       text resident set size, the amount of physical memory devoted to executable code.
+
+       [1mtt          [22mTT        controlling tty (terminal).  (alias [1mtname[22m, [1mtty[22m).
+
+       [1mtty         [22mTT        controlling tty (terminal).  (alias [1mtname[22m, [1mtt[22m).
+
+       [1mucmd        [22mCMD       see [1mcomm[22m.  (alias [1mcomm[22m, [1mucomm[22m).
+
+       [1mucomm       [22mCOMMAND   see [1mcomm[22m.  (alias [1mcomm[22m, [1mucmd[22m).
+
+       [1muid         [22mUID       see [1meuid[22m.  (alias [1meuid[22m).
+
+       [1muname       [22mUSER      see [1meuser[22m.  (alias [1meuser[22m, [1muser[22m).
+
+       [1munit        [22mUNIT      displays unit which a process belongs to, if systemd support has been included.
+
+       [1muser        [22mUSER      see [1meuser[22m.  (alias [1meuser[22m, [1muname[22m).
+
+       [1muserns      [22mUSERNS    Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1muss         [22mUSS       Unique set size, the non‐swapped physical memory, which is not shared with an another task.
+
+       [1mutsns       [22mUTSNS     Unique inode number describing the namespace the process belongs to.  See [4mnamespaces[24m(7).
+
+       [1muunit       [22mUUNIT     displays user unit which a process belongs to, if systemd support has been included.
+
+       [1mvsize       [22mVSZ       see [1mvsz[22m.  (alias [1mvsz[22m).
+
+       [1mvsz         [22mVSZ       virtual memory size of the process in KiB (1024-byte units).  Device mappings are currently excluded; this is subject to change.  (alias [1mvsize[22m).
+
+       [1mwbytes      [22mWBYTES    Number of bytes which this process caused to be sent to the storage layer.
+
+       [1mwcbytes     [22mWCBYTES   Number of cancelled write bytes.
+
+       [1mwchan       [22mWCHAN     name of the kernel function in which the process is sleeping.
+
+       [1mwchars      [22mWCHARS    Number of bytes which this task has caused, or shall cause to be written to disk.
+
+       [1mwops        [22mWOPS      Number of write I/O operations—that is, system calls such as [1mwrite[22m(2) and [1mpwrite[22m(2).
+
+[1mENVIRONMENT VARIABLES[0m
+       The following environment variables could affect [1mps[22m:
+
+       [1mCOLUMNS[0m
+          Override default display width.
+
+       [1mLINES[0m
+          Override default display height.
+
+       [1mPS_PERSONALITY[0m
+          Set to one of posix, old, linux, bsd, sun, digital...  (see section [1mPERSONALITY [22mbelow).
+
+       [1mCMD_ENV[0m
+          Set to one of posix, old, linux, bsd, sun, digital...  (see section [1mPERSONALITY [22mbelow).
+
+       [1mI_WANT_A_BROKEN_PS[0m
+          Force obsolete command line interpretation.
+
+       [1mLC_TIME[0m
+          Date format.
+
+       [1mLIBPROC_HIDE_KERNEL[0m
+          Set this to any value to hide kernel threads normally displayed with the [1m‐e [22moption. This is equivalent to selecting [1m‐‐ppid 2 ‐p 2 ‐‐deselect [22minstead. Also works in BSD mode.
+
+       [1mPS_COLORS[0m
+          Not currently supported.
+
+       [1mPS_FORMAT[0m
+          Default output format override. You may set this to a format string of the type used for the [1m-o [22moption.  The [1mDefSysV [22mand [1mDefBSD [22mvalues are particularly useful.
+
+       [1mPOSIXLY_CORRECT[0m
+          Don’t find excuses to ignore bad "features".
+
+       [1mPOSIX2[0m
+          When set to "on", acts as [1mPOSIXLY_CORRECT[22m.
+
+       [1mUNIX95[0m
+          Don’t find excuses to ignore bad "features".
+
+       [1m_XPG[0m
+          Cancel [1mCMD_ENV[22m=[4mirix[24m non-standard behavior.
+
+       In general, it is a bad idea to set these variables.  The one exception is [1mCMD_ENV [22mor [1mPS_PERSONALITY[22m, which could be set to Linux for  normal  systems.   Without  that  setting,  [1mps[0m
+       follows the useless and bad parts of the Unix98 standard.
+
+[1mPERSONALITY[0m
+       390        like the OS/390 OpenEdition [1mps[0m
+       aix        like AIX [1mps[0m
+       bsd        like FreeBSD [1mps [22m(totally non-standard)
+       compaq     like Digital Unix [1mps[0m
+       debian     like the old Debian [1mps[0m
+       digital    like Tru64 (was Digital Unix, was OSF/1) [1mps[0m
+       gnu        like the old Debian [1mps[0m
+       hp         like HP-UX [1mps[0m
+       hpux       like HP-UX [1mps[0m
+       irix       like Irix [1mps[0m
+       linux      ***** [1mrecommended [22m*****
+       old        like the original Linux [1mps [22m(totally non-standard)
+       os390      like OS/390 Open Edition [1mps[0m
+       posix      standard
+       s390       like OS/390 Open Edition [1mps[0m
+       sco        like SCO [1mps[0m
+       sgi        like Irix [1mps[0m
+       solaris2   like Solaris 2+ (SunOS 5) [1mps[0m
+       sunos4     like SunOS 4 (Solaris 1) [1mps [22m(totally non-standard)
+       svr4       standard
+       sysv       standard
+       tru64      like Tru64 (was Digital Unix, was OSF/1) [1mps[0m
+       unix       standard
+       unix95     standard
+       unix98     standard
+
+[1mBUGS[0m
+       The fields [1mbsdstart [22mand [1mstart [22mwill only show the abbreviated month name in English. The fields [1mlstart [22mand [1mstime [22mwill show the abbreviated month name in the configured locale but may
+       exceed the column width due to the different lengths for abbreviated month and day names across languages.
+
+[1mSEE ALSO[0m
+       [1mpgrep[22m(1), [1mpstree[22m(1), [1mtop[22m(1), [1mstrftime[22m(3), [1mproc[22m(5).
+
+[1mSTANDARDS[0m
+       This [1mps [22mconforms to:
+
+       1   Version 2 of the Single Unix Specification
+       2   The Open Group Technical Standard Base Specifications, Issue 6
+       3   IEEE Std 1003.1, 2004 Edition
+       4   X/Open System Interfaces Extension [UP XSI]
+       5   ISO/IEC 9945:2003
+
+[1mAUTHOR[0m
+       [1mps [22mwas originally written by ]8;;lankeste@fwi.uva.nl\Branko Lankester]8;;\.  ]8;;johnsonm@redhat.com\Michael K. Johnson]8;;\ re-wrote it significantly to use the proc filesystem, changing a few things in the process.  ]8;;mjshield@nyx.cs.du.edu\Michael Shields]8;;\ added
+       the  pid-list  feature.   ]8;;cblake@bbn.com\Charles Blake]8;;\  added  multi-level  sorting,  the dirent-style library, the device name-to-number mmaped database, the approximate binary search directly on
+       System.map, and many code and documentation cleanups.  David Mossberger-Tang wrote the generic BFD support for psupdate.  ]8;;albert@users.sf.net\Albert Cahalan]8;;\ rewrote ps for full Unix98 and BSD  support,
+       along with some ugly hacks for obsolete and foreign syntax.
+
+       Please send bug reports to ]8;;procps@freelists.org\procps@freelists.org]8;;\.  No subscription is required or suggested.
+
+procps‐ng                                                                                2023‐01‐18                                                                                    [4mPS[24m(1)
