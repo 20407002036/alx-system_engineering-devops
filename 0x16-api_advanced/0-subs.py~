@@ -1,0 +1,21 @@
+#!/usr/bin/python3
+
+import requests
+"""
+The function that returns the number of subs on a sunreddit
+"""
+
+def number_of_subscribers(subreddit):
+    """
+    This is the function
+    """
+    url = f"hhtps://https://www.reddit.com/t/{subreddit}/about.json"
+    headers = {'User-Agent': 'Custom User Agent'}
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        subscribers = data['data']['subscribers']
+        return subscribers
+    else:
+        return 0
