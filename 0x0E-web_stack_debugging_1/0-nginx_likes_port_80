@@ -1,0 +1,29 @@
+#!/bin/env bash
+
+# Install Nginx if not already installed
+apt-get update
+apt-get install -y nginx
+
+# Check if Nginx is listening on port 80
+netstat -tuln | grep ":80"
+
+# If not listening on port 80, configure Nginx to listen on port 80
+if ! netstat -tuln | grep ":80" > /dev/null; then
+    # Write Nginx configuration to listen on port 80
+    echo "server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+        }
+    }" > /etc/nginx/sites-available/default
+
+    # Restart Nginx to apply the configuration
+    systemctl restart nginx
+
+    echo "Nginx is now listening on port 80."
+else
+    echo "Nginx is already listening on port 80."
+fi
